@@ -1,0 +1,6 @@
+/terraform.tfvars
+/terraform.plan
+/tf.plan
+/terraform.tfstate.backup
+/terraform.tfstate
+/.terraform/plugins/linux_arm/lock.json
