@@ -12,25 +12,12 @@ internal_network:
 external_network:
   docker_network.present: []
 
-# redis:
-#   docker_image.present:
-#     - tag: "{{ salt['pillar.get']('mastodon:docker:tag:redis') }}"
-
-# tootsuite/mastodon:
-#   docker_image.present:
-#     - tag: "{{ salt['pillar.get']('mastodon:docker:tag:mastodon') }}"
-
-# postgres:
-#   docker_image.present:
-#     - tag: "{{ salt['pillar.get']('mastodon:docker:tag:postgres') }}"
-
 mount_volume:
   mount.mounted:
     - name: '/mnt/do_volume'
     - device: '/dev/disk/by-id/scsi-0DO_Volume_sdb'
     - fstype: 'ext4'
     - mkmnt: true
-
 
 postgres_dir:
   file.directory:
@@ -44,7 +31,6 @@ mastodon_postgres:
     - image: "{{ salt['pillar.get']('mastodon:docker:images:postgres') }}"
     - require:
       - postgres_dir
-    #     - postgres
     - network_mode: 'internal_network'
     - restart_policy: always
     - environment:
@@ -136,19 +122,20 @@ sidekiq:
 nginx:
   docker_container.running:
     - restart_policy: 'always'
-    - require:
+    - watch:
         - /root/nginx.conf
+    - require:
         - streaming
         - web
         - internal_network
         - external_network
     - image: "stillinbeta/docker-nginx-certbot:latest"
     - binds:
-        - '/root/nginx.conf:/etc/nginx/nginx.conf.d/mastodon.conf:ro'
+        - '/root/nginx.conf:/etc/nginx/conf.d/mastodon.conf:ro'
     - network_mode: 'internal_network'
     - publish:
-        - 80:80
-        - 443:443
+        - 0.0.0.0:80:80
+        - 0.0.0.0:443:443
     - networks:
         - internal_network
         - external_network

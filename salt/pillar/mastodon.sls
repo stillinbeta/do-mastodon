@@ -10,7 +10,6 @@ mastodon:
       redis: "redis:{{ terraform['tags']['redis'] }}"
       postgres: "postgres:{{ terraform['tags']['postgres'] }}"
       mastodon: "tootsuite/mastodon:{{ terraform['tags']['mastodon'] }}"
-      nginx: "nginx:{{ terraform['tags']['nginx'] }}"
     environment:
       # Service dependencies
       # You may set wEDIS_URL instead for more advanced options

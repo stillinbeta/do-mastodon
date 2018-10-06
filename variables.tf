@@ -36,3 +36,4 @@ variable "nginx_version" {
 
 // user configuration
 variable "mastodon_domain" {}
+variable "letsencrypt_email" {}

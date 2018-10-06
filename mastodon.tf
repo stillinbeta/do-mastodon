@@ -22,6 +22,11 @@ resource "digitalocean_volume" "do_volume" {
 
 resource "digitalocean_floating_ip" "ip" {
   region = "${var.digital_ocean_region}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 resource "digitalocean_floating_ip_assignment" "ip_assignment"{
@@ -42,6 +47,7 @@ data "template_file" "ansible_vars" {
     postgres_password = "${random_string.postgres_password.result}"
 
     mastodon_domain = "${var.mastodon_domain}"
+    letsencrypt_email = "${var.letsencrypt_email}"
   }
 }
 
@@ -78,7 +84,6 @@ resource "digitalocean_droplet" "mastodon" {
   }
 
   lifecycle {
-    # uncomment once everything works
     create_before_destroy = true
   }
 }

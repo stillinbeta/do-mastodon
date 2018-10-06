@@ -25,8 +25,8 @@ server {
   ssl_session_cache shared:SSL:10m;
 
   # Uncomment these lines once you acquire a certificate:
-  # ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
-  # ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+  ssl_certificate     /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
   keepalive_timeout    70;
   sendfile             on;
@@ -102,5 +102,5 @@ server {
     tcp_nodelay on;
   }
 
-  error_page 500 501 502 503 504 /500.html;
+  # error_page 500 501 502 503 504 /500.html;
 }
