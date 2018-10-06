@@ -1,0 +1,13 @@
+{% load_yaml as terraform %}
+  tags:
+    redis: "${redis_version}"
+    postgres: "${postgres_version}"
+    mastodon: "${mastodon_version}"
+  secrets:
+    secret_key_base: "${secret_key_base}"
+    otp_secret: "${otp_secret}"
+    postgres_password: "${postgres_password}"
+  config:
+    domain: "${mastodon_domain}"
+    email: "${letsencrypt_email}"
+{% endload %}

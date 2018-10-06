@@ -4,3 +4,5 @@
 /terraform.tfstate.backup
 /terraform.tfstate
 /.terraform/plugins/linux_arm/lock.json
+salt/pillar/terraform_vars.jinja
+/.terraform

@@ -1,3 +1,4 @@
+// Digital ocean
 variable "digital_ocean_token"{}
 
 variable "digital_ocean_region" {
@@ -5,7 +6,7 @@ variable "digital_ocean_region" {
 }
 
 variable "droplet_size" {
-  default = "1gb"
+  default = "2gb"
 }
 
 variable "droplet_image" {
@@ -15,3 +16,23 @@ variable "droplet_image" {
 variable "volume_size" {
   default = 10
 }
+
+// Tag versions for docker images
+variable "redis_version" {
+  default = "4.0-alpine"
+}
+
+variable "postgres_version" {
+  default = "10.5-alpine"
+}
+
+variable "mastodon_version" {
+  default = "v2.5.0"
+}
+
+variable "nginx_version" {
+  default = "1.15-alpine"
+}
+
+// user configuration
+variable "mastodon_domain" {}
