@@ -112,26 +112,26 @@ sidekiq:
         - redis:mastodon_redis
         - postgres:mastodon_postgres
 
-/root/nginx.conf:
-  file.managed:
-    - source: salt://nginx.conf.jinja
-    - template: jinja
-    - context:
-        domain:  "{{ salt['pillar.get']('mastodon:config:domain') }}"
+mastodon_nginx:
+  docker_image.present:
+  - base: "stillinbeta/docker-nginx-certbot:latest"
+  - sls: nginx_certbot
+  - tag: latest
 
 nginx:
   docker_container.running:
     - restart_policy: 'always'
     - watch:
-        - /root/nginx.conf
+        - mastodon_nginx
     - require:
         - streaming
         - web
         - internal_network
         - external_network
-    - image: "stillinbeta/docker-nginx-certbot:latest"
-    - binds:
-        - '/root/nginx.conf:/etc/nginx/conf.d/mastodon.conf:ro'
+    - image: "mastodon_nginx:latest"
+    - command:
+        - "/bin/bash"
+        - "/scripts/entrypoint.sh"
     - network_mode: 'internal_network'
     - publish:
         - 0.0.0.0:80:80
