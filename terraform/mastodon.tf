@@ -35,7 +35,7 @@ resource "digitalocean_floating_ip_assignment" "ip_assignment"{
 }
 
 data "template_file" "salt_vars" {
-  template = "${file("salt_vars.template")}"
+  template = "${file("./terraform/salt_vars.template")}"
 
   vars {
     redis_version = "${var.redis_version}"
