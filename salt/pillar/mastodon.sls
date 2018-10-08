@@ -12,12 +12,12 @@ mastodon:
       mastodon: "tootsuite/mastodon:{{ terraform['tags']['mastodon'] }}"
     environment:
       # Service dependencies
-      # You may set wEDIS_URL instead for more advanced options
+      # You may set REDIS_URL instead for more advanced options
       # You may also set REDIS_NAMESPACE to share Redis between multiple Mastodon servers
-      REDIS_HOST: redis
+      REDIS_HOST: mastodon_redis
       REDIS_PORT: 6379
       # You may set DATABASE_URL instead for more advanced options
-      DB_HOST: postgres
+      DB_HOST: mastodon_postgres
       DB_USER: postgres
       DB_NAME: postgres
       DB_PASS: "{{ terraform['secrets']['postgres_password'] }}"
@@ -75,11 +75,11 @@ mastodon:
       # If you want to use an SMTP server without authentication (e.g local Postfix relay)
       # then set SMTP_AUTH_METHOD and SMTP_OPENSSL_VERIFY_MODE to 'none' and
       # *comment* SMTP_LOGIN and SMTP_PASSWORD (leaving them blank is not enough).
-      # SMTP_SERVER: smtp.mailgun.org
-      # SMTP_PORT: 587
-      # SMTP_LOGIN:
-      # SMTP_PASSWORD:
-      # SMTP_FROM_ADDRESS: notifications@example.com
+      SMTP_SERVER: {{ terraform['smtp']['server'] }}
+      SMTP_PORT: {{ terraform['smtp']['port'] }}
+      SMTP_LOGIN: {{ terraform['smtp']['login'] }}
+      SMTP_PASSWORD: {{ terraform['smtp']['password'] }}
+      SMTP_FROM_ADDRESS: notifications@{{ terraform['config']['domain'] }}
       #SMTP_DOMAIN:  # defaults to LOCAL_DOMAIN
       #SMTP_DELIVERY_METHOD: smtp # delivery method can also be sendmail
       #SMTP_AUTH_METHOD: plain

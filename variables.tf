@@ -30,9 +30,17 @@ variable "mastodon_version" {
   default = "v2.5.0"
 }
 
-variable "nginx_version" {
-  default = "1.15-alpine"
+// mail configuration
+variable "smtp_server" {
+  default = "smtp.mailgun.org"
 }
+
+variable "smtp_port" {
+  default = 587
+}
+
+variable "smtp_login" {}
+variable "smtp_password" {}
 
 // user configuration
 variable "mastodon_domain" {}

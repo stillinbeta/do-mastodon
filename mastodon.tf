@@ -46,6 +46,11 @@ data "template_file" "ansible_vars" {
     otp_secret = "${random_string.otp_secret.result}"
     postgres_password = "${random_string.postgres_password.result}"
 
+    smtp_server = "${var.smtp_server}"
+    smtp_port = "${var.smtp_port}"
+    smtp_login = "${var.smtp_login}"
+    smtp_password = "${var.smtp_password}"
+
     mastodon_domain = "${var.mastodon_domain}"
     letsencrypt_email = "${var.letsencrypt_email}"
   }
@@ -54,7 +59,6 @@ data "template_file" "ansible_vars" {
 resource "local_file" "ansible_vars" {
   content = "${data.template_file.ansible_vars.rendered}"
   filename = "salt/pillar/terraform_vars.jinja"
-
 }
 
 resource "digitalocean_droplet" "mastodon" {
