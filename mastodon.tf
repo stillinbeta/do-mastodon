@@ -34,8 +34,8 @@ resource "digitalocean_floating_ip_assignment" "ip_assignment"{
   ip_address = "${digitalocean_floating_ip.ip.ip_address}"
 }
 
-data "template_file" "ansible_vars" {
-  template = "${file("ansible.template")}"
+data "template_file" "salt_vars" {
+  template = "${file("salt_vars.template")}"
 
   vars {
     redis_version = "${var.redis_version}"
@@ -56,8 +56,8 @@ data "template_file" "ansible_vars" {
   }
 }
 
-resource "local_file" "ansible_vars" {
-  content = "${data.template_file.ansible_vars.rendered}"
+resource "local_file" "salt_vars" {
+  content = "${data.template_file.salt_vars.rendered}"
   filename = "salt/pillar/terraform_vars.jinja"
 }
 
@@ -76,7 +76,7 @@ resource "digitalocean_droplet" "mastodon" {
     private_key = "${file("~/.ssh/id_rsa")}"
   }
 
-  depends_on = ["local_file.ansible_vars"]
+  depends_on = ["local_file.salt_vars"]
 
   provisioner "salt-masterless" {
     local_state_tree = "./salt"
@@ -85,10 +85,6 @@ resource "digitalocean_droplet" "mastodon" {
 
     local_pillar_roots = "./salt/pillar"
     remote_pillar_roots = "/srv/pillar"
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 

@@ -50,14 +50,14 @@ mastodon_redis:
 
 mastodon_assets_dir:
   file.directory:
-    - name: /mnt/sdb/mastodon/assets
+    - name: /mnt/do_volume/mastodon/assets
     - makedirs: true
     - require:
       - mount_volume
 
 mastodon_system_dir:
   file.directory:
-    - name: /mnt/sdb/mastodon/system
+    - name: /mnt/do_volume/mastodon/system
     - makedirs: true
     - require:
       - mount_volume
@@ -100,8 +100,14 @@ sidekiq:
     - environment: {{ salt['pillar.get']('mastodon:docker:environment') }}
     - command: "bundle exec sidekiq -q default -q push -q mailers -q pull"
     - binds:
-        - '/mnt/sdb/mastodon/system:/mastodon/public/system'
+        - '/mnt/do_volume/mastodon/system:/mastodon/public/system'
     - network_mode: 'internal_network'
+
+certs_dir:
+  file.directory:
+    - name: /mnt/do_volume/certs
+    - require:
+        - mount_volume
 
 mastodon_nginx:
   docker_image.present:
@@ -115,6 +121,7 @@ nginx:
     - watch:
         - mastodon_nginx
     - require:
+        - certs_dir
         - streaming
         - web
         - internal_network
@@ -130,5 +137,7 @@ nginx:
     - networks:
         - internal_network
         - external_network
+    - binds:
+        - '/mnt/do_volume/certs:/etc/letsencrypt/live'
     - environment:
         CERTBOT_EMAIL: "{{ salt['pillar.get']('mastodon:config:email') }}"
