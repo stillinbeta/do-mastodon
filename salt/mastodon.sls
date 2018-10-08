@@ -37,7 +37,7 @@ mastodon_postgres:
         POSTGRES_PASSWORD: "{{ salt['pillar.get']('mastodon:postgres:password') }}"
         PGDATA: "/var/lib/postgres/data/pgdata"
     - binds:
-        - '/mnt/sdb/postgres:/var/lib/postgres/data'
+        - '/mnt/do_volume/postgres:/var/lib/postgres/data'
 
 mastodon_redis:
   docker_container.running:
@@ -77,9 +77,6 @@ web:
         - '/mnt/sdb/mastodon/system:/mastodon/public/system'
         - '/mnt/sdb/mastodon/assets:/mastodon/public/assets'
     - network_mode: 'internal_network'
-    - links:
-        - redis:mastodon_redis
-        - postgres:mastodon_postgres
 
 streaming:
   docker_container.running:
@@ -91,9 +88,6 @@ streaming:
     - environment: {{ salt['pillar.get']('mastodon:docker:environment') }}
     - command: "yarn start"
     - network_mode: 'internal_network'
-    - links:
-        - redis:mastodon_redis
-        - postgres:mastodon_postgres
 
 sidekiq:
   docker_container.running:
@@ -108,9 +102,6 @@ sidekiq:
     - binds:
         - '/mnt/sdb/mastodon/system:/mastodon/public/system'
     - network_mode: 'internal_network'
-    - links:
-        - redis:mastodon_redis
-        - postgres:mastodon_postgres
 
 mastodon_nginx:
   docker_image.present:
@@ -141,6 +132,3 @@ nginx:
         - external_network
     - environment:
         CERTBOT_EMAIL: "{{ salt['pillar.get']('mastodon:config:email') }}"
-    - links:
-        - web:web
-        - streaming:streaming
