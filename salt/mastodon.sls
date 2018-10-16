@@ -74,9 +74,11 @@ web:
     - environment: {{ salt['pillar.get']('mastodon:docker:environment') }}
     - command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
     - binds:
-        - '/mnt/sdb/mastodon/system:/mastodon/public/system'
-        - '/mnt/sdb/mastodon/assets:/mastodon/public/assets'
-    - network_mode: 'internal_network'
+        - '/mnt/do_volume/mastodon/system:/mastodon/public/system'
+        - '/mnt/do_volume/mastodon/assets:/mastodon/public/assets'
+    - networks:
+        - 'external_network'
+        - 'internal_network'
 
 streaming:
   docker_container.running:
@@ -87,7 +89,11 @@ streaming:
     - image: "{{ salt['pillar.get']('mastodon:docker:images:mastodon') }}"
     - environment: {{ salt['pillar.get']('mastodon:docker:environment') }}
     - command: "yarn start"
-    - network_mode: 'internal_network'
+    - networks:
+        - 'external_network'
+        - 'internal_network'
+
+
 
 sidekiq:
   docker_container.running:
@@ -101,7 +107,9 @@ sidekiq:
     - command: "bundle exec sidekiq -q default -q push -q mailers -q pull"
     - binds:
         - '/mnt/do_volume/mastodon/system:/mastodon/public/system'
-    - network_mode: 'internal_network'
+    - networks:
+        - 'external_network'
+        - 'internal_network'
 
 certs_dir:
   file.directory:
@@ -138,6 +146,6 @@ nginx:
         - internal_network
         - external_network
     - binds:
-        - '/mnt/do_volume/certs:/etc/letsencrypt/live'
+        - '/mnt/do_volume/certs:/etc/letsencrypt'
     - environment:
         CERTBOT_EMAIL: "{{ salt['pillar.get']('mastodon:config:email') }}"
