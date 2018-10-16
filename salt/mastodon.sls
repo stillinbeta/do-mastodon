@@ -52,6 +52,8 @@ mastodon_assets_dir:
   file.directory:
     - name: /mnt/do_volume/mastodon/assets
     - makedirs: true
+    - user: 991
+    - group: 991
     - require:
       - mount_volume
 
@@ -59,6 +61,8 @@ mastodon_system_dir:
   file.directory:
     - name: /mnt/do_volume/mastodon/system
     - makedirs: true
+    - user: 991
+    - group: 991
     - require:
       - mount_volume
 
