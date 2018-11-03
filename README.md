@@ -163,3 +163,13 @@ salt mastodon state.apply
 ```
 
 You can do this as much as you want, to update the Mastodon instance without the downtime incurred by destroy-and-replace.
+
+### Importing existing infrastructure
+
+If you already have existing infrastructure you'd like to use with Terraform, you can import it. The most important resources to add are the static IP and the volume:
+
+```shell
+terraform import -config=terraform digitalocean_volume.do_volume $(curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer <your api token>" "https://api.digitalocean.com/v2/volumes?region=nyc1"  | jq -r '.volumes[0].id')
+terraform import -config=terraform digitalocean_floating_ip.ip $(curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer <your api token>" "https://api.digitalocean.com/v2/floating_ips?region=nyc1"  | jq -r '.floating_ips[0].ip')
+```
+
