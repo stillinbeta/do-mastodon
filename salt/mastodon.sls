@@ -39,14 +39,23 @@ mastodon_postgres:
     - binds:
         - '/mnt/do_volume/postgres:/var/lib/postgres/data'
 
+redis_dir:
+  file.directory:
+    - name: /mnt/do_volume/postgres
+    - require:
+        - mount_volume
+
 mastodon_redis:
   docker_container.running:
     - restart_policy: 'always'
     - image: "{{ salt['pillar.get']('mastodon:docker:images:redis') }}"
-    # - require:
-    #     - redis
+    - require:
+      - redis_dir
+    - command: redis-server --appendonly yes
     - network_mode: 'internal_network'
     - restart_policy: always
+    - binds:
+      - '/mnt/do_volume/redis:/data'
 
 mastodon_assets_dir:
   file.directory:
