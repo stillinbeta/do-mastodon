@@ -6,15 +6,6 @@ map $http_upgrade $connection_upgrade {
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:10m inactive=7d max_size=1g;
 
 server {
-  listen 80;
-  listen [::]:80;
-  server_name {{ domain }};
-  # root /root/public;
-  location /.well-known/acme-challenge/ { allow all; }
-  location / { return 301 https://$host$request_uri; }
-}
-
-server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
   server_name {{ domain }};
@@ -24,7 +15,6 @@ server {
   ssl_prefer_server_ciphers on;
   ssl_session_cache shared:SSL:10m;
 
-  # Uncomment these lines once you acquire a certificate:
   ssl_certificate     /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
