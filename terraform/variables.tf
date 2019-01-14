@@ -27,7 +27,7 @@ variable "postgres_version" {
 }
 
 variable "mastodon_version" {
-  default = "v2.6.1"
+  default = "v2.6.5"
 }
 
 // mail configuration
